@@ -29,9 +29,10 @@ async def respond(request: Request):
     print("Message received: ", json_string)
     update = Update.de_json(json_string, bot)
 
-    chat_id = update.message.chat.id
-    msg_id = update.message.message_id
-    text = update.message.text.encode('utf-8').decode()
+    message = update.message if update.message else update.edited_message
+    chat_id = message.chat.id
+    msg_id = message.message_id
+    text = message.text.encode('utf-8').decode()
     print("Message received: ", text)
     if text == "/start":
         bot_welcome = """
