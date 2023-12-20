@@ -25,8 +25,8 @@ app.add_middleware(
 
 @app.post(f"/{TELEGRAM_TOKEN}")
 async def respond(request: Request):
-
-    update = Update.de_json(request.json(), bot)
+    json_string = await request.json()
+    update = Update.de_json(json_string, bot)
 
     chat_id = update.message.chat.id
     msg_id = update.message.message_id
