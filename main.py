@@ -26,6 +26,7 @@ app.add_middleware(
 @app.post(f"/{TELEGRAM_TOKEN}")
 async def respond(request: Request):
     json_string = await request.json()
+    print("Message received: ", json_string)
     update = Update.de_json(json_string, bot)
 
     chat_id = update.message.chat.id
@@ -36,9 +37,9 @@ async def respond(request: Request):
         bot_welcome = """
         Welcome. I can answer any question you have about LangChain framework.
         """
-        bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
+        await bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
     else:
-        bot.sendMessage(chat_id=chat_id, text="What a nice day!", reply_to_message_id=msg_id)
+        await bot.sendMessage(chat_id=chat_id, text="What a nice day!", reply_to_message_id=msg_id)
     
     return "ok"
 
