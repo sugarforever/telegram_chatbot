@@ -27,9 +27,9 @@ app.add_middleware(
 async def respond(request: Request):
     body = await request.json()
 
-    chat_id = body.message.chat.id
-    msg_id = body.message.message_id
-    text = body.message.text.encode('utf-8').decode()
+    chat_id = body["message"]["chat"]["id"]
+    msg_id = body["message"]["message_id"]
+    text = body["message"]["text"].encode('utf-8').decode()
     print("Message received: ", text)
     if text == "/start":
         bot_welcome = """
