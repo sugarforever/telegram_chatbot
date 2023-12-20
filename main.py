@@ -26,14 +26,23 @@ app.add_middleware(
 @app.post(f"/{TELEGRAM_TOKEN}")
 async def respond(request: Request):
     body = await request.json()
-    print(body)
+
+    chat_id = body.message.chat.id
+    msg_id = body.message.message_id
+    text = body.message.text.encode('utf-8').decode()
+    print("Message received: ", text)
+    if text == "/start":
+        bot_welcome = """
+        Welcome. I can answer any question you have about LangChain framework.
+        """
+        bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
+    else:
+        bot.sendMessage(chat_id=chat_id, text="What a nice day!", reply_to_message_id=msg_id)
+    
     return "ok"
 
 @app.route('/set_webhook', methods=['GET', 'POST'])
 async def set_webhook(request: Request):
    webhook = f"{APP_URL}/{TELEGRAM_TOKEN}"
-   s = await bot.setWebhook(url=webhook)
-   if s:
-       return "webhook setup ok"
-   else:
-       return "webhook setup failed"
+   await bot.setWebhook(url=webhook)
+   return "webhook setup ok"
