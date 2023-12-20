@@ -30,8 +30,10 @@ async def respond(request: Request):
     return "ok"
 
 @app.route('/set_webhook', methods=['GET', 'POST'])
-def set_webhook():
-   s = bot.setWebhook(f"{APP_URL}/{TELEGRAM_TOKEN}")
+async def set_webhook(request: Request):
+   webhook = f"{APP_URL}/{TELEGRAM_TOKEN}"
+   print(webhook)
+   s = await bot.setWebhook(webhook)
    if s:
        return "webhook setup ok"
    else:
