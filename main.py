@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from telegram import Bot, Update
 import os
+import spark_client
 
 load_dotenv()
 
@@ -36,16 +37,24 @@ async def respond(request: Request):
     print("Message received: ", text)
     if text == "/start":
         bot_welcome = """
-        Welcome. I can answer any question you have about LangChain framework.
+        欢迎欢迎！我是科大讯飞星火小助手，您有什么问题都可以问我哦！
         """
-        await bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
+        await bot.sendMessage(chat_id=chat_id, text=bot_welcome)
     else:
-        await bot.sendMessage(chat_id=chat_id, text="What a nice day!", reply_to_message_id=msg_id)
-    
+        # await bot.sendMessage(chat_id=chat_id, text="What a nice day!", reply_to_message_id=msg_id)
+        answer = spark_client.ask(text)
+        if answer is None:
+            answer = "抱歉，我脑子有些问题，请让我休息几秒钟。"
+        await bot.sendMessage(chat_id=chat_id, text=answer)
+
     return "ok"
 
-@app.route('/set_webhook', methods=['GET', 'POST'])
+
+@app.post('/set_webhook')
 async def set_webhook(request: Request):
-   webhook = f"{APP_URL}/{TELEGRAM_TOKEN}"
-   await bot.setWebhook(url=webhook)
-   return "webhook setup ok"
+    webhook = f"{APP_URL}/{TELEGRAM_TOKEN}"
+    success = await bot.setWebhook(webhook)
+    if success:
+        return f"Webhook setup ok"
+    else:
+        return f"Webhook setup failed"
