@@ -1,14 +1,14 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-import telegram
+from telegram import Bot, Update
 import os
 
 load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 APP_URL = os.getenv("APP_URL")
-bot = telegram.Bot(token=TELEGRAM_TOKEN)
+bot = Bot(token=TELEGRAM_TOKEN)
 
 app = FastAPI()
 
@@ -24,12 +24,10 @@ app.add_middleware(
 
 
 @app.post(f"/{TELEGRAM_TOKEN}")
-async def respond(request: Request):
-    body = await request.json()
-
-    chat_id = body["message"]["chat"]["id"]
-    msg_id = body["message"]["message_id"]
-    text = body["message"]["text"].encode('utf-8').decode()
+async def respond(update: Update):
+    chat_id = update.message.chat.id
+    msg_id = update.message.message_id
+    text = update.message.text.encode('utf-8').decode()
     print("Message received: ", text)
     if text == "/start":
         bot_welcome = """
