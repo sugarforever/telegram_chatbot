@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "telegram-chatbot"
+version = "0.1.0"
+description = ""
+authors = ["sugarforever <william.1022@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.105.0"
+uvicorn = "^0.24.0.post1"
+python-telegram-bot = "^20.7"
+requests = "^2.31.0"
+python-dotenv = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
